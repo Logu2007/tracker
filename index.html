@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Productivity Tracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .stats { margin-top: 20px; }
+        .stat { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Employee Productivity Tracker</h1>
+    <div class="stats">
+        <div class="stat">Start Time: <span id="start-time">Not Started</span></div>
+        <div class="stat">Productive Hours: <span id="productive-hours">0:00:00</span></div>
+        <div class="stat">Idle Hours: <span id="idle-hours">0:00:00</span></div>
+    </div>
+    <script>
+        const startTime = new Date();
+        document.getElementById('start-time').textContent = startTime.toLocaleTimeString();
+
+        const formatTime = (seconds) => {
+            const hrs = Math.floor(seconds / 3600);
+            const mins = Math.floor((seconds % 3600) / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        };
+
+        window.electronAPI.onStateUpdate(({ isIdle, productiveTime, idleTime }) => {
+            document.getElementById('productive-hours').textContent = formatTime(productiveTime);
+            document.getElementById('idle-hours').textContent = formatTime(idleTime);
+        });
+    </script>
+</body>
+</html>
